@@ -1,7 +1,3 @@
-//#include <Wire.h>
-//#include "RTClib.h"
-//RTC_DS1307 rtc;
-
 #include <CountUpDownTimer.h>
 CountUpDownTimer T(DOWN);
 
@@ -21,44 +17,8 @@ boolean coundown = false;
 int digit1, digit2, digit3, digit4, TimeMinute = 0, TimeSecond = 0;
 byte CountMinute = 0, CountSecond = 0;
 
-
-void Timecount() {
-  T.Timer();
-  //  DateTime now = rtc.now();
-  //  if (addTime >= 60) {
-  //    addTime = addTime - 60;
-  //  }
-  //  addTime = addTime - now.minute();
-  //  TimeSecond -= 1;
-  //  if (TimeSecond < 0) TimeSecond = 59;
-  //  if (now.minute() <= 0) TimeSecond = 0;
-
-  if (T.ShowMinutes() <= 0 && T.ShowSeconds() <= 0) {
-    coundown = false;
-  }
-
-  if (digitalRead(BUTTON1) == 0 || digitalRead(BUTTON2) == 0 || digitalRead(BUTTON3) == 0) {
-    delay(200);
-    coundown = false;
-  }
-
-  Serial.print("Count = ");
-  Serial.print(T.ShowMinutes());
-  Serial.print(':');
-  Serial.println(T.ShowSeconds());
-
-
-  digit1 = (T.ShowMinutes() % 100) / 10;
-  digit2 = T.ShowMinutes() % 10;
-  digit3 = (T.ShowSeconds() % 100) / 10;
-  digit4 = T.ShowSeconds() % 10;
-  DataOut(num1[digit1], num2[digit2], num3[digit3], num4[digit4]);
-  delay(200);
-}
-
 void setup() {
   Serial.begin(115200);
-  //  rtc.begin();
   pinMode(BUTTON1, INPUT_PULLUP);
   pinMode(BUTTON2, INPUT_PULLUP);
   pinMode(BUTTON3, INPUT_PULLUP);
@@ -72,32 +32,27 @@ void setup() {
     DataOut(num1[i], num2[i], num3[i], num4[i]);
     delay(100);
   }
-  
   //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 void loop() {
-  //  DateTime now = rtc.now();
 
   if (digitalRead(BUTTON1) == 0) {
     delay(500);
-    //    TimeMinute = now.minute() + 4;
-    //    TimeSecond = 60;
     Serial.println("1");
     T.SetTimer(0, 5, 0);
     coundown = true;
   }
+  
   if (digitalRead(BUTTON2) == 0) {
     delay(500);
-    //    TimeMinute = now.minute() + 9;
-    //    TimeSecond = 60;
     Serial.println("2");
     T.SetTimer(0, 10, 0);
     coundown = true;
   }
+  
   if (digitalRead(BUTTON3) == 0) {
     delay(500);
-    //    TimeMinute = now.minute() + 14;
     Serial.println("3");
     T.SetTimer(0, 15, 0);
     coundown = true;
@@ -109,7 +64,7 @@ void loop() {
   }
 
   DataOut(num1[0], num2[0], num3[0], num4[0]);
-  Serial.println("main");
+//  Serial.println("main");
   delay(100);
 }
 
@@ -120,4 +75,36 @@ void DataOut(byte data1, byte data2, byte data3, byte data4) {
   shiftOut(DATA, CLOCK, MSBFIRST, data3);
   shiftOut(DATA, CLOCK, MSBFIRST, data4);
   digitalWrite(LATCH, HIGH);
+}
+
+void Timecount() {
+  T.Timer();
+  if (T.ShowMinutes() <= 0 && T.ShowSeconds() <= 0) {
+    DataOut(0x00, 0x00, 0x00, 0x00);
+    delay(500);
+    DataOut(0xFF, 0xFF, 0xFF, 0xFF);
+    delay(500);
+    DataOut(0x00, 0x00, 0x00, 0x00);
+    delay(500);
+    DataOut(0xFF, 0xFF, 0xFF, 0xFF);
+    delay(500);
+    coundown = false;
+  }
+
+  if (digitalRead(BUTTON1) == 0 || digitalRead(BUTTON2) == 0 || digitalRead(BUTTON3) == 0) {
+    delay(200);
+    coundown = false;
+  }
+
+//  Serial.print("Count = ");
+//  Serial.print(T.ShowMinutes());
+//  Serial.print(':');
+//  Serial.println(T.ShowSeconds());
+  
+  digit1 = (T.ShowMinutes() % 100) / 10;
+  digit2 = T.ShowMinutes() % 10;
+  digit3 = (T.ShowSeconds() % 100) / 10;
+  digit4 = T.ShowSeconds() % 10;
+  DataOut(num1[digit1], num2[digit2], num3[digit3], num4[digit4]);
+  delay(200);
 }
