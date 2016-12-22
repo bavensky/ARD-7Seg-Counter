@@ -36,7 +36,6 @@ void setup() {
 }
 
 void loop() {
-
   if (digitalRead(BUTTON1) == 0) {
     delay(500);
     Serial.println("1");
@@ -106,5 +105,5 @@ void Timecount() {
   digit3 = (T.ShowSeconds() % 100) / 10;
   digit4 = T.ShowSeconds() % 10;
   DataOut(num1[digit1], num2[digit2], num3[digit3], num4[digit4]);
-  delay(200);
+//  delay(200);
 }
