@@ -1,3 +1,11 @@
+/*
+   Arduino Time Counter for 7 Segment display
+   Hardware : Arduino UNO, 7Segment 4 digit, 74hc595, 3 Button
+   Author : Bavensky :3
+   E-mail : apiruk326@gmail.com
+*/
+
+
 #include <CountUpDownTimer.h>
 CountUpDownTimer T(DOWN);
 
@@ -42,14 +50,14 @@ void loop() {
     T.SetTimer(0, 5, 0);
     coundown = true;
   }
-  
+
   if (digitalRead(BUTTON2) == 0) {
     delay(500);
     Serial.println("2");
     T.SetTimer(0, 10, 0);
     coundown = true;
   }
-  
+
   if (digitalRead(BUTTON3) == 0) {
     delay(500);
     Serial.println("3");
@@ -63,7 +71,7 @@ void loop() {
   }
 
   DataOut(num1[0], num2[0], num3[0], num4[0]);
-//  Serial.println("main");
+  //  Serial.println("main");
   delay(100);
 }
 
@@ -95,15 +103,15 @@ void Timecount() {
     coundown = false;
   }
 
-//  Serial.print("Count = ");
-//  Serial.print(T.ShowMinutes());
-//  Serial.print(':');
-//  Serial.println(T.ShowSeconds());
-  
+  //  Serial.print("Count = ");
+  //  Serial.print(T.ShowMinutes());
+  //  Serial.print(':');
+  //  Serial.println(T.ShowSeconds());
+
   digit1 = (T.ShowMinutes() % 100) / 10;
   digit2 = T.ShowMinutes() % 10;
   digit3 = (T.ShowSeconds() % 100) / 10;
   digit4 = T.ShowSeconds() % 10;
   DataOut(num1[digit1], num2[digit2], num3[digit3], num4[digit4]);
-//  delay(200);
+  //  delay(200);
 }
